@@ -92,6 +92,11 @@ window.onload = function () {
     })
 
 
+    let sectionFilterHtmlElement = document.getElementsByClassName("sectionFilter")[0];
+
+    
+
+
     /*
     * On regroupe tous les filtres dans un tableau
     * chaque filtre permettant de selectionner seulement les projets correspondant à la position dans le tableau équivalent à l'id du projet obtenue dans le fichier json
@@ -101,26 +106,31 @@ window.onload = function () {
     let allFilter = document.getElementsByClassName("filter");
     let allFilterLenght = allFilter.length;
     let allFigureElement = document.getElementsByClassName("mesProjetsFigure");
-    for(let i = 0; i < allFilterLenght; i++){
-        allFilter[i].addEventListener("click", (e) => {
-            let filterSelected = document.getElementsByClassName("filterSelected")[0];
-            filterSelected.classList.remove("filterSelected");
-            allFilter[i].classList.add("filterSelected");
-            for(let j = 0; j < allFigureElement.length; j++){
-                if(i === 0) {
-                    allFigureElement[j].style.display = "block";
-                } else {
-                    if(allFigureElement[j].classList.contains(i)) {
+
+    if(token !== undefined) {
+        sectionFilterHtmlElement.classList.add("hidden");
+    } else {
+        for(let i = 0; i < allFilterLenght; i++){
+            allFilter[i].addEventListener("click", (e) => {
+                let filterSelected = document.getElementsByClassName("filterSelected")[0];
+                filterSelected.classList.remove("filterSelected");
+                allFilter[i].classList.add("filterSelected");
+                for(let j = 0; j < allFigureElement.length; j++){
+                    if(i === 0) {
                         allFigureElement[j].style.display = "block";
                     } else {
-                        allFigureElement[j].style.display = "none";
+                        if(allFigureElement[j].classList.contains(i)) {
+                            allFigureElement[j].style.display = "block";
+                        } else {
+                            allFigureElement[j].style.display = "none";
+                        }
                     }
                 }
-            }
-            
-        })
+                
+            })
+        }
     }
-
+    
 
     /**
      * Partie modale ajout d'un projet
