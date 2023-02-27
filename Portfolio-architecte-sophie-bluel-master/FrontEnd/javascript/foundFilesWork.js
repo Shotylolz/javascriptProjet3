@@ -106,8 +106,10 @@ window.onload = function () {
     let allFilter = document.getElementsByClassName("filter");
     let allFilterLenght = allFilter.length;
     let allFigureElement = document.getElementsByClassName("mesProjetsFigure");
+    let divContenerButtonModifProject = document.getElementsByClassName("contenerButtonModifierProject")[0];
 
     if(token !== undefined) {
+        divContenerButtonModifProject.classList.remove("hidden")
         sectionFilterHtmlElement.classList.add("hidden");
     } else {
         for(let i = 0; i < allFilterLenght; i++){
