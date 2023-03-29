@@ -407,6 +407,15 @@ window.onload = function () {
                 })
             })
     })
+
+    function del_cookie(name) {
+        name.forEach((e) => {
+            document.cookie = e +
+            '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+        });
+    }
+
+    window.close(del_cookie(["userId", "tokenSave"]));
     
 
     
