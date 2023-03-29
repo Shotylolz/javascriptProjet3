@@ -294,14 +294,17 @@ footer nav ul {
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
-.contenerIndivFigureInModal {
+/*
+.figureInModalProject {
+	width: 17%;
+	
+}
+*/
+.figureInModalProject {
 	position: relative;
 	width: 17%;
-	margin : 10px 10px 5px 0;
-}
-.figureInModalProject {
-	width: 100%;
-	height: 75px;
+	height: 150px;
+	margin : 20px 10px 20px 0;
 	display: flex;
 	flex-direction: column;
 	
@@ -362,10 +365,24 @@ a {
 	background-color: black;
 }
 
-.contenerInput {
-	width: 250px;
-	height: 200px;
+.formAddProject {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.contenerInputAndImageAdd {
+	width: 420px;
+	height: 169px;
 	background-color: #E8F1F6;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.contenerInput {
+	width: 420px;
+	height: 169px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -400,21 +417,41 @@ a {
 	height: 1px;
 }
 
+.contenerInputTitle {
+	margin: 35px 0 25px 0;
+}
 .contenerInputTitle, .contenerInputCategory {
-	width: 250px;
+	width: 420px;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 }
 #categoryProject, #inputTitle {
-	width: 250px;
+	width: 420px;
+	height: 51px;
 	padding: 0;
 	margin: 0;
-	border: 1px solid black;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 .optionCategoryProject {
 	width: 100%;
+}
+
+.labelForm {
+	margin : 0 0 7px 0;
+}
+
+.separationBar {
+	width: 420px;
+	height: 0px;
+	margin: 45px 0 0 0;
+	border: 1px solid #B3B3B3;
+}
+
+.buttonSubmitFormProject {
+	margin: 30px 0 0 0;
 }
 
 a {

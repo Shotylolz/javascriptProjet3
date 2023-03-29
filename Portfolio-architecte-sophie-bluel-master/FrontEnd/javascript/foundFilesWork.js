@@ -64,6 +64,14 @@ window.onload = function () {
         return figureElement;
     }
 
+    const removeProject = function (dataId) {
+        let projectToRemove = document.querySelectorAll(`[data-id="${dataId}"`);
+        projectToRemove.forEach((e) => {
+            e.parentNode.removeChild(e);
+        })
+        
+    }
+
     /**
      * Appel fetch pour récupérer les works
      * On crée ensuite pour chaque work une figure avec la fonction createElementFigure
@@ -87,6 +95,7 @@ window.onload = function () {
                 galleryElementDiv.appendChild(figureElement);
                 tableInformationContenerAllWork.push(data[i]);
                 tableInformationContenerAllFigureWithWork.push(figureElement);
+
             }
         });
     })
@@ -151,14 +160,14 @@ window.onload = function () {
      */
     function addFigureInModal(dataWork){
         let figureElementNewWorkCreatedForModal = createElementFigure([dataWork.categoryId, "figureInModalProject"], dataWork.imageUrl, dataWork.title, dataWork.id);
-        let divIndividualContenerFigureInModal = document.createElement("div");
-        divIndividualContenerFigureInModal.classList.add("contenerIndivFigureInModal");
-        divIndividualContenerFigureInModal.appendChild(figureElementNewWorkCreatedForModal);
+        //let divIndividualContenerFigureInModal = document.createElement("div");
+        //divIndividualContenerFigureInModal.classList.add("contenerIndivFigureInModal");
+        //divIndividualContenerFigureInModal.appendChild(figureElementNewWorkCreatedForModal);
         let buttonDeleteProject = document.createElement("div");
         buttonDeleteProject.classList.add("buttonDeleteProject");
         buttonDeleteProject.setAttribute("data-idworkdelete", dataWork.id);
-        divIndividualContenerFigureInModal.appendChild(buttonDeleteProject);
-        contenerAllFigureInModal.appendChild(divIndividualContenerFigureInModal);
+        figureElementNewWorkCreatedForModal.appendChild(buttonDeleteProject);
+        contenerAllFigureInModal.appendChild(figureElementNewWorkCreatedForModal);
     }
 
     var allButtonDeleteEachWork;
@@ -188,7 +197,7 @@ window.onload = function () {
          */
         for(let i = 0; i < allButtonDeleteEachWork.length; i++ ) {
             allButtonDeleteEachWork[i].addEventListener("click", (e) => {
-                console.log(document.querySelector(`[data-id="${allButtonDeleteEachWork[i].dataset.idworkdelete}"]`));
+                //console.log(document.querySelector(`[data-id="${allButtonDeleteEachWork[i].dataset.idworkdelete}"]`));
                 let idWorkToDelete = allButtonDeleteEachWork[i].getAttribute("data-idworkdelete");
                 fetch(`http://localhost:5678/api/works/${idWorkToDelete}`, {
                     method : "Delete",
@@ -200,9 +209,10 @@ window.onload = function () {
                 })
                 .then(function(responseDeleteWork) {
                     if(!responseDeleteWork.ok){
-                        throw new Error("attention"); //Essayer de comprendre pourquoi la response json n'est pas bonne
+                        throw new Error("attention erreur présente dans le game"); //Essayer de comprendre pourquoi la response json n'est pas bonne
                     }
                     console.log(responseDeleteWork.status);
+                    removeProject(idWorkToDelete);
                 })
 
             })
@@ -228,7 +238,12 @@ window.onload = function () {
     const close = function (boiteModale) {
         boiteModale.setAttribute('aria-hidden', true);
         document.getElementsByTagName("main")[0].setAttribute('aria-hidden', false);
-
+        imageAdd.src = "";
+        formAddNewProject.reset();
+        contenerInputForAddUserImage.classList.remove("hidden");
+        if(contenerForImageAddByuser.lastElementChild.tagName === "IMG"){
+            contenerForImageAddByuser.removeChild(contenerForImageAddByuser.lastElementChild);
+        }
     }
 
     /**
@@ -237,7 +252,7 @@ window.onload = function () {
     var allButonCloserModal = document.querySelectorAll('[data-dismiss="modalProject"]');
     allButonCloserModal.forEach( (e) => {
         const modalToClose = document.getElementById("modalProject");
-
+        
         e.addEventListener('click', (e) => {
             e.preventDefault();
             close(modalToClose);
@@ -262,6 +277,12 @@ window.onload = function () {
         contenerSecondModalProject.classList.add("hidden");
         contenerPrincipalModalProject.classList.remove("hidden");
         formAddNewProject.reset();
+        imageAdd.src = "";
+        contenerInputForAddUserImage.classList.remove("hidden");
+        if(contenerForImageAddByuser.lastElementChild.tagName === "IMG"){
+            contenerForImageAddByuser.removeChild(contenerForImageAddByuser.lastElementChild);
+        }
+
     });
     ;
 
@@ -271,8 +292,8 @@ window.onload = function () {
      */
     let inputImage = document.getElementById("inputImage");
     var imageAdd = document.createElement("img");
-    imageAdd.style.height = "200px";
-    imageAdd.style.width = "250px";
+    imageAdd.style.height = "100%";
+    imageAdd.style.width = "75%";
     let imageBlob = new Image();
 
     let blobUrl;
@@ -315,6 +336,7 @@ window.onload = function () {
      */
     let contenerInputForAddUserImage = document.getElementsByClassName("contenerInput")[0];
     let labelImage = document.getElementsByClassName("labelImage")[0];
+    var contenerForImageAddByuser = document.getElementsByClassName("contenerInputAndImageAdd")[0];
     labelImage.addEventListener("click", (e) => {
         inputImage.click();
     })
@@ -324,7 +346,6 @@ window.onload = function () {
         contenerModalProject.appendChild(imageAdd);
         uploadImage(e);
         contenerInputForAddUserImage.classList.add("hidden");
-        let contenerForImageAddByuser = document.getElementsByClassName("contenerInputAndImageAdd")[0];
         contenerForImageAddByuser.appendChild(imageAdd);
     })
 
@@ -376,6 +397,13 @@ window.onload = function () {
                     let figureElementNewWorkCreated = createElementFigure([data.categoryId, "mesProjetsFigure"], data.imageUrl, data.title, data.id);
                     addFigureInModal(data);
                     galleryElementDiv.appendChild(figureElementNewWorkCreated);
+                    formAddNewProject.reset();
+                    imageAdd.src = "";
+                    contenerInputForAddUserImage.classList.remove("hidden");
+                    if(contenerForImageAddByuser.lastElementChild.tagName === "IMG"){
+                        contenerForImageAddByuser.removeChild(contenerForImageAddByuser.lastElementChild);
+                    }
+                    
                 })
             })
     })
