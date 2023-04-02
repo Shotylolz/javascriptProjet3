@@ -38,6 +38,7 @@
 		<div class="contenerTitleProjectAndButtonModifProject">
 			<h2>Mes Projets</h2>
 			<div class="contenerButtonModifierProject hidden">
+				<div class="logoModifierProject"></div>
 				<button class="buttonModifierProject" type="button" aria-haspopup="modalProject" aria-controls="modalProject">Modifier</button>
 			</div>	
 		</div>
@@ -87,9 +88,9 @@
 			</div>
 			<h2 id="modalTitle">Galerie photo</h2>
 			<div class="contenerAllFigureModalProject"></div>
-			<hr>
+			<div class="lineBeforeButtonAddProject"></div>
 			<button class="addProject">Ajouter une photo</button>
-			<p>Supprimer la galerie</p>
+			<p class="textDeleteTheGallery">Supprimer la galerie</p>
 		</div>
 		<div class="contenerSecondPageAddProject hidden">
 			<div class='contenerHeaderModalFormProject'>
@@ -107,7 +108,7 @@
 						<div class="contenerImageUserInput"></div>
 						<div class="contenerInputFileAndLabel">
 							<label for="image" class="labelImage">Ajouter une photo</label>
-							<input type='file' id='inputImage' name='image' accept='image/png, image/jpeg'>
+							<input type='file' id='inputImage' name='image' accept='image/png, image/jpeg' required="required">
 						</div>
 						<div class="contenerTextInfoInputFile">
 							<p>jpg; png : 4mo max</p>
@@ -116,7 +117,7 @@
 				</div>
 				<div class='contenerInputTitle'>
 					<label for='inputTitle' class="labelForm">Titre</label>
-					<input type='text' id='inputTitle' name='title'>
+					<input type='text' id='inputTitle' name='title'  required="required">
 				</div>
 				<div class='contenerInputCategory'>
 					<label for="category" class="labelForm">Catégorie</label>
@@ -126,6 +127,7 @@
 						<option id="3" value="3" class="optionCategoryProject">Hôtels & Restaurant</option>
 					</select>
 				</div>
+				<div class="contenerMessageSuccess"><p class="messageSuccess"></p></div>
 				<div class="separationBar"></div>
 				<input type="submit" value="Valider" class="buttonSubmitFormProject"></input>
 			</form>

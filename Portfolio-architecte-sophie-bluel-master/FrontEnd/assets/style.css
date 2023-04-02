@@ -233,6 +233,14 @@ footer nav ul {
 	align-items: center;
 }
 
+.logoModifierProject {
+	width: 15px;
+	height: 15px;
+	margin: 0 5px 0 0;
+	background: url("../assets/images/logoModif.png") no-repeat center;
+	background-size: 100% 100%;
+}
+
 .buttonModifierProject {
 	padding: 0;
 	margin: 0;
@@ -294,12 +302,7 @@ footer nav ul {
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
-/*
-.figureInModalProject {
-	width: 17%;
-	
-}
-*/
+
 .figureInModalProject {
 	position: relative;
 	width: 17%;
@@ -333,6 +336,26 @@ footer nav ul {
 	background-size: 50% 50%;
 }
 
+.addProject {
+	width: 237px;
+	height: 36px;
+	margin : 0 0 15px 0;
+	color: #FFFFFF;
+	background: #1D6154;
+	border-radius: 60px;
+
+}
+
+.textDeleteTheGallery {
+	margin: 0 0 15px 0;
+	padding: 0;
+	color : #D65353;
+}
+
+.lineBeforeButtonAddProject {
+	border: 1px #B3B3B3;
+}
+
 a {
 	width: 100%;
 	height: 100%;
@@ -344,6 +367,8 @@ a {
 	flex-direction: column;
 	align-items: center;
 }
+
+
 
 .contenerHeaderModalFormProject {
 	width: 95%;

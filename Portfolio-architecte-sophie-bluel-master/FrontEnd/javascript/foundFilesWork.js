@@ -1,16 +1,6 @@
 window.onload = function () {
 
     /**
-     * Prochaine étape
-     * Supprimer l'image du form lors du retour ou de la fermeture de la modale
-     * remettre les valeurs à zéro
-     * css input 
-     * css button delete et figure
-     * check ce qu'il manque
-     * surement le css responsive de ce qui a été ajouté
-     */
-
-    /**
      * Vérification présence de cookies user id et tokenSave
      * Si les cookies sont présent, c'est que l'utilisateur est connecté, on les garde donc en stock pour les utiliser le cas échéant
      */
@@ -44,9 +34,6 @@ window.onload = function () {
     * Ajouter avec append l'image et figcaption dans l'element figure
     * Enfin, retourner l'element figure crée
     * */
-
-    
-
     const createElementFigure = function (classHtml, imgUrl, imgAlt, dataId){
         let figureElement = document.createElement("figure");
         figureElement.setAttribute("data-id", dataId);
@@ -55,21 +42,12 @@ window.onload = function () {
         classHtml.forEach( (e) => {
             figureElement.classList.add(e);
         });
-        //Changer par dataset la class pour filtrer ensuite
         figCaptionElement.textContent = imgAlt;
         imgElement.src = imgUrl;
         imgElement.alt = imgAlt;
         imgElement.crossOrigin = "anonymous";
         figureElement.append(imgElement, figCaptionElement);
         return figureElement;
-    }
-
-    const removeProject = function (dataId) {
-        let projectToRemove = document.querySelectorAll(`[data-id="${dataId}"`);
-        projectToRemove.forEach((e) => {
-            e.parentNode.removeChild(e);
-        })
-        
     }
 
     /**
@@ -82,30 +60,30 @@ window.onload = function () {
     var tableInformationContenerAllWork = [];
     var tableInformationContenerAllFigureWithWork = [];
 
-    fetch(`http://localhost:5678/api/works`)
-    .then(function(responseFetch) {
-        if(!responseFetch.ok) {
-            throw new Error(`erreur HTTP! Statut: ${responseFetch.status}`);
-        }
-        responseFetch.json().then((data) => {
-            console.log(data);
-            let dataLenght = data.length;
-            for(let i = 0; i < dataLenght; i++) {
-                let figureElement = createElementFigure([data[i].category.id, "mesProjetsFigure"], data[i].imageUrl, data[i].title, data[i].id);
-                galleryElementDiv.appendChild(figureElement);
-                tableInformationContenerAllWork.push(data[i]);
-                tableInformationContenerAllFigureWithWork.push(figureElement);
-
+    function recupProject() {
+        fetch(`http://localhost:5678/api/works`)
+        .then(function(responseFetch) {
+            if(!responseFetch.ok) {
+                throw new Error(`erreur HTTP! Statut: ${responseFetch.status}`);
             }
-        });
-    })
+            responseFetch.json().then((data) => {
+                let dataLenght = data.length;
+                for(let i = 0; i < dataLenght; i++) {
+                    let figureElement = createElementFigure([data[i].category.id, "mesProjetsFigure"], data[i].imageUrl, data[i].title, data[i].id);
+                    galleryElementDiv.appendChild(figureElement);
+                    tableInformationContenerAllWork.push(data[i]);
+                    tableInformationContenerAllFigureWithWork.push(figureElement);
+
+                }
+            });
+        })
+    }
+    recupProject();
+
+
 
 
     let sectionFilterHtmlElement = document.getElementsByClassName("sectionFilter")[0];
-
-    
-
-
     /*
     * On regroupe tous les filtres dans un tableau
     * chaque filtre permettant de selectionner seulement les projets correspondant à la position dans le tableau équivalent à l'id du projet obtenue dans le fichier json
@@ -117,6 +95,9 @@ window.onload = function () {
     let allFigureElement = document.getElementsByClassName("mesProjetsFigure");
     let divContenerButtonModifProject = document.getElementsByClassName("contenerButtonModifierProject")[0];
 
+    /**
+     * Si l'utilisateur est connecté, les filtres ne sont plus affichés, il a la possibilité de modifier ses projets
+     */
     if(token !== undefined) {
         divContenerButtonModifProject.classList.remove("hidden")
         sectionFilterHtmlElement.classList.add("hidden");
@@ -160,15 +141,13 @@ window.onload = function () {
      */
     function addFigureInModal(dataWork){
         let figureElementNewWorkCreatedForModal = createElementFigure([dataWork.categoryId, "figureInModalProject"], dataWork.imageUrl, dataWork.title, dataWork.id);
-        //let divIndividualContenerFigureInModal = document.createElement("div");
-        //divIndividualContenerFigureInModal.classList.add("contenerIndivFigureInModal");
-        //divIndividualContenerFigureInModal.appendChild(figureElementNewWorkCreatedForModal);
         let buttonDeleteProject = document.createElement("div");
         buttonDeleteProject.classList.add("buttonDeleteProject");
         buttonDeleteProject.setAttribute("data-idworkdelete", dataWork.id);
         figureElementNewWorkCreatedForModal.appendChild(buttonDeleteProject);
         contenerAllFigureInModal.appendChild(figureElementNewWorkCreatedForModal);
     }
+
 
     var allButtonDeleteEachWork;
     let boiteOpenAlreadyOpenOneTime = false;
@@ -194,31 +173,41 @@ window.onload = function () {
 
         /**
          * Pour activer la suppression possible avec un click dans la boite modale, on créer une boucle for
-         */
-        for(let i = 0; i < allButtonDeleteEachWork.length; i++ ) {
+         * Cette fonction doit être appelé dans l'ouverture de la modale, sinon les button delete n'existent pas
+        */
+        for(let i = 0; i < allButtonDeleteEachWork.length; i++ ) {  
             allButtonDeleteEachWork[i].addEventListener("click", (e) => {
-                //console.log(document.querySelector(`[data-id="${allButtonDeleteEachWork[i].dataset.idworkdelete}"]`));
                 let idWorkToDelete = allButtonDeleteEachWork[i].getAttribute("data-idworkdelete");
                 fetch(`http://localhost:5678/api/works/${idWorkToDelete}`, {
                     method : "Delete",
                     headers : {
                         "accept" : "*/*",
                         "Authorization": `Bearer ${token}`
-
                     }
                 })
                 .then(function(responseDeleteWork) {
                     if(!responseDeleteWork.ok){
-                        throw new Error("attention erreur présente dans le game"); //Essayer de comprendre pourquoi la response json n'est pas bonne
+                        throw new Error(`erreur HTTP! Statut: ${responseFetch.status}`);
                     }
-                    console.log(responseDeleteWork.status);
                     removeProject(idWorkToDelete);
                 })
-
+    
             })
         }
-        
-    }
+
+        /**
+        * Fonction permettant la suppression d'un projet
+        * Utilisation du data id pour retrouver le projet à supprimer        
+        **/
+        const removeProject = function (dataId) {
+            let projectToRemove = document.querySelectorAll(`[data-id="${dataId}"`);
+             projectToRemove.forEach((e) => {
+                e.parentNode.removeChild(e);
+            })
+         }    
+    
+    } 
+
     /**
      * Lors du clique sur le bouton, on ouvre la modale
      */
@@ -234,6 +223,7 @@ window.onload = function () {
     /**
      * 
      * Fonction pour ferme la boite modale
+     * bien penser à reset le form lors de la fermeture de la modale
      */
     const close = function (boiteModale) {
         boiteModale.setAttribute('aria-hidden', true);
@@ -245,14 +235,12 @@ window.onload = function () {
             contenerForImageAddByuser.removeChild(contenerForImageAddByuser.lastElementChild);
         }
     }
-
     /**
      * Si clique sur le button, on ferme la modale
      */
     var allButonCloserModal = document.querySelectorAll('[data-dismiss="modalProject"]');
     allButonCloserModal.forEach( (e) => {
         const modalToClose = document.getElementById("modalProject");
-        
         e.addEventListener('click', (e) => {
             e.preventDefault();
             close(modalToClose);
@@ -262,7 +250,7 @@ window.onload = function () {
 
     /**
      * Si l'utilisateur clique le bouton addProject, on cache la section avec les figures de la modale et on affiche le form
-     * Si l'utilisateur clique sur le boutton return une fois le form affiché, on fait l'inverse
+     * Si l'utilisateur clique sur le boutton return une fois le form affiché, on fait l'inverse (On pense à reset le form)
      */
     let buttonAddProject = document.getElementsByClassName("addProject")[0];
     let buttonReturnPrincipalModalProject = document.getElementsByClassName("logoReturn")[0];
@@ -282,9 +270,7 @@ window.onload = function () {
         if(contenerForImageAddByuser.lastElementChild.tagName === "IMG"){
             contenerForImageAddByuser.removeChild(contenerForImageAddByuser.lastElementChild);
         }
-
     });
-    ;
 
     /**
      * Element inputFile contenant l'image ajouté par l'user
@@ -351,26 +337,19 @@ window.onload = function () {
 
 
     let formAddNewProject = document.getElementsByClassName("formAddProject")[0];
-    let inputImg = document.getElementById("inputImage");
-    let inputTitle = document.getElementById("inputTitle");
-    let inputCategoryProject = document.getElementById("categoryProject");
-
-    
+    let messageError = document.getElementsByClassName("messageError")[0];
+    /**
+     * Lors du clique de la validation du form
+     * On vérifie que chaque input soit bien rempli, sinon on envoi un message à l'utilisateur
+     * On bloque le processus pour pouvoir envoyer les informations côtés serveur grâce à un fetch
+     * Les données seront envoyé avec FormData reprenant les valeurs du form
+     */
     formAddNewProject.addEventListener("submit" , (e) => {
         e.preventDefault();
-        
         var formDataProp = new FormData();
-        formDataProp.append("category", 1)
+        formDataProp.append("category", formAddNewProject.category.value)
         formDataProp.append("image", fileAccess);
         formDataProp.append("title", formAddNewProject.title.value);
-        /*
-        console.log(typeof formDataProp.get("imageUrl"));
-        for(var pair of formDataProp.entries()) {
-            console.log(pair[0]+ ', '+ pair[1]);
-         }
-        */
-
-
 
         let responseAddProject = fetch('http://localhost:5678/api/works', {
             method: 'POST',
@@ -381,19 +360,9 @@ window.onload = function () {
         })
             .then(function (responseAddProjectFetch) {
                 if(!responseAddProjectFetch.ok) {
-                    /*
-                    console.log(formDataProp)
-                    for(var pair of formDataProp.entries()) {
-                        console.log(pair[0]+ ', '+ pair[1]);
-                     }
-                    console.log(responseAddProjectFetch);
-                    console.log(token);
-                    */
                     throw new Error(`Erreur ${responseAddProjectFetch.status}, attention`);
                 }
                 responseAddProjectFetch.json().then((data) => {
-                    console.log(data);
-                    console.log(responseAddProjectFetch.status);
                     let figureElementNewWorkCreated = createElementFigure([data.categoryId, "mesProjetsFigure"], data.imageUrl, data.title, data.id);
                     addFigureInModal(data);
                     galleryElementDiv.appendChild(figureElementNewWorkCreated);
@@ -403,10 +372,12 @@ window.onload = function () {
                     if(contenerForImageAddByuser.lastElementChild.tagName === "IMG"){
                         contenerForImageAddByuser.removeChild(contenerForImageAddByuser.lastElementChild);
                     }
-                    
                 })
+                let modal = document.getElementById("modalProject");
+                close(modal);
             })
     })
+
 
     function del_cookie(name) {
         name.forEach((e) => {
@@ -415,7 +386,7 @@ window.onload = function () {
         });
     }
 
-    window.close(del_cookie(["userId", "tokenSave"]));
+    //window.close(del_cookie(["userId", "tokenSave"]));
     
 
     
